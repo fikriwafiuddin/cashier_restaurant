@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Kasir</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-64 bg-white shadow-md">
+        <div class="p-4">
+          <h1 class="text-2xl font-bold text-center">Dashboard Kasir</h1>
+        </div>
+        <nav class="mt-6">
+          <a href="#" class="block py-2.5 px-4 text-gray-700 hover:bg-gray-200" id="checkInBtn">Check-In</a>
+          <a href="#" class="block py-2.5 px-4 text-gray-700 hover:bg-gray-200" id="orderBtn">Pesanan</a>
+          <a href="index.html" class="block py-2.5 px-4 text-gray-700 hover:bg-gray-200">Keluar</a>
+        </nav>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 p-6 overflow-y-auto">
+        <header class="flex items-center justify-between">
+          <h2 class="text-3xl font-semibold" id="mainHeader">Selamat Datang di Dashboard Kasir</h2>
+        </header>
+
+        <main class="mt-6">
+          <!-- Check-In Section -->
+          <div id="checkInSection" class="content-section">
+            <h2 class="text-xl font-bold mb-4">Check-In Kasir</h2>
+            <form id="checkInForm" class="space-y-4">
+              <div>
+                <label for="cashierName" class="block text-sm font-medium text-gray-700">Nama Kasir</label>
+                <input
+                  type="text"
+                  id="cashierName"
+                  class="block w-full p-2 border rounded-md"
+                  placeholder="Masukkan nama kasir"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                class="w-full bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-400"
+              >
+                Check-In
+              </button>
+            </form>
+            <p id="checkInStatus" class="mt-4 text-gray-500"></p>
+          </div>
+
+          <!-- Order Section -->
+          <div id="orderSection" class="content-section hidden">
+            <h2 class="text-xl font-bold mb-4">Daftar Pesanan</h2>
+            <table class="table-auto w-full bg-white border rounded shadow">
+              <thead class="bg-gray-100 border-b">
+                <tr>
+                  <th class="px-4 py-2">ID Pesanan</th>
+                  <th class="px-4 py-2">Harga</th>
+                  <th class="px-4 py-2">Status</th>
+                  <th class="px-4 py-2">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="orderTable">
+                <!-- Pesanan akan dimasukkan di sini -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Order Detail Section -->
+          <div id="orderDetailSection" class="content-section hidden">
+            <h2 class="text-xl font-bold mb-4">Detail Pesanan</h2>
+            <div id="orderDetails" class="bg-white p-4 border rounded shadow">
+              <!-- Detail Pesanan akan dimasukkan di sini -->
+            </div>
+            <button
+              id="backToOrdersBtn"
+              class="mt-4 w-full bg-gray-500 text-white rounded-md py-2 px-4 hover:bg-gray-400"
+            >
+              Kembali ke Daftar Pesanan
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Pesanan sample
+      const orders = [
+        { orderId: 1, totalPrice: 350000, status: "Menunggu", items: [{ name: "Wagyu Premium", price: 150000 }, { name: "Matcha Latte", price: 35000 }, { name: "Choco Lava", price: 45000 }] },
+        { orderId: 2, totalPrice: 70000, status: "Menunggu", items: [{ name: "Carbonara Truffle", price: 95000 }] },
+        { orderId: 3, totalPrice: 220000, status: "Menunggu", items: [{ name: "Ayam Geprek", price: 30000 }, { name: "French Fries", price: 25000 }, { name: "Latte", price: 30000 }] },
+      ];
+
+      // Mengisi daftar pesanan
+      const orderTable = document.getElementById("orderTable");
+      function populateOrderTable() {
+        orderTable.innerHTML = "";
+        orders.forEach((order) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td class="px-4 py-2">${order.orderId}</td>
+            <td class="px-4 py-2">Rp ${order.totalPrice.toLocaleString()}</td>
+            <td class="px-4 py-2">${order.status}</td>
+            <td class="px-4 py-2">
+              <button class="bg-blue-500 text-white px-2 py-1 rounded" onclick="viewOrderDetails(${order.orderId})">Lihat Detail</button>
+              <button class="bg-green-500 text-white px-2 py-1 rounded" onclick="updateOrderStatus(${order.orderId}, 'Selesai')">Selesai</button>
+            </td>
+          `;
+          orderTable.appendChild(row);
+        });
+      }
+      populateOrderTable();
+
+      // Fitur Check-In
+      const checkInForm = document.getElementById("checkInForm");
+      const cashierNameInput = document.getElementById("cashierName");
+      const checkInStatus = document.getElementById("checkInStatus");
+
+      checkInForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const cashierName = cashierNameInput.value.trim();
+        if (cashierName) {
+          checkInStatus.textContent = `Kasir ${cashierName} berhasil check-in!`;
+          checkInStatus.classList.add("text-green-500");
+          checkInStatus.classList.remove("text-gray-500");
+          cashierNameInput.disabled = true;
+          checkInForm.querySelector("button").disabled = true;
+          showSection("orderSection");
+        } else {
+          checkInStatus.textContent = "Nama kasir tidak boleh kosong.";
+          checkInStatus.classList.add("text-red-500");
+          checkInStatus.classList.remove("text-gray-500");
+        }
+      });
+
+      // Fungsi untuk menampilkan section
+      function showSection(sectionId) {
+        const sections = document.querySelectorAll(".content-section");
+        sections.forEach((section) => section.classList.add("hidden"));
+        document.getElementById(sectionId).classList.remove("hidden");
+      }
+
+      // Fungsi update status pesanan
+      function updateOrderStatus(orderId, status) {
+        const order = orders.find((order) => order.orderId === orderId);
+        if (order) {
+          order.status = status;
+          populateOrderTable();
+        }
+      }
+
+      // Fungsi untuk melihat detail pesanan
+      function viewOrderDetails(orderId) {
+        const order = orders.find((order) => order.orderId === orderId);
+        if (order) {
+          const orderDetails = document.getElementById("orderDetails");
+          orderDetails.innerHTML = `
+            <h3 class="text-lg font-semibold">Pesanan ID: ${order.orderId}</h3>
+            <p class="mt-2"><strong>Status:</strong> ${order.status}</p>
+            <p><strong>Total Harga:</strong> Rp ${order.totalPrice.toLocaleString()}</p>
+            <h4 class="mt-4 text-md font-semibold">Detail Menu:</h4>
+            <ul class="list-disc pl-5">
+              ${order.items.map(item => `<li>${item.name} - Rp ${item.price.toLocaleString()}</li>`).join('')}
+            </ul>
+          `;
+          showSection("orderDetailSection");
+        }
+      }
+
+      // Tombol Kembali ke Daftar Pesanan
+      document.getElementById("backToOrdersBtn").addEventListener("click", () => {
+        showSection("orderSection");
+      });
+
+      // Menavigasi ke halaman pesanan
+      document.getElementById("checkInBtn").addEventListener("click", () => showSection("checkInSection"));
+      document.getElementById("orderBtn").addEventListener("click", () => showSection("orderSection"));
+    </script>
+  </body>
+</html>

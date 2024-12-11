@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-100">
+    <div class="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8">
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 class="text-center text-2xl font-bold tracking-tight text-gray-900">
+          Login ke akun
+        </h2>
+      </div>
+
+      <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form class="space-y-6" id="loginForm">
+          <div>
+            <label
+              for="username"
+              class="block text-sm font-medium text-gray-900"
+              >Username</label
+            >
+            <div class="mt-2">
+              <input
+                type="text"
+                name="username"
+                id="username"
+                required
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between">
+              <label
+                for="password"
+                class="block text-sm font-medium text-gray-900"
+                >Password</label
+              >
+              <div class="text-sm">
+                <a
+                  href="#"
+                  id="forgotPassword"
+                  class="font-semibold text-indigo-600 hover:text-indigo-500"
+                  >Lupa password?</a
+                >
+              </div>
+            </div>
+            <div class="mt-2">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div>
+            <a
+              href="/kasir.html"
+              type="submit"
+              class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Log in
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div
+      id="modal"
+      class="hidden fixed inset-0 z-10 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+    >
+      <div class="bg-white rounded-lg shadow-md p-6 w-80 text-center">
+        <h3 class="text-lg font-semibold text-gray-900">Lupa Password?</h3>
+        <p class="mt-2 text-gray-700">
+          Kontak developer
+          <a href="mailto:email@email.com" class="text-indigo-600"
+            >dapy@ganteng.com</a
+          >
+          untuk mereset password.
+        </p>
+        <button
+          id="closeModal"
+          class="mt-4 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-500"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault()
+
+          const username = document.getElementById("username").value
+          const password = document.getElementById("password").value
+
+          if (username === "admin" && password === "123") {
+            window.location.href = "admin.html"
+          } else if (username === "kasir" && password === "321") {
+            window.location.href = "kasir.html"
+          } else {
+            alert("Username atau password salah!")
+          }
+        })
+
+      const modal = document.getElementById("modal")
+      const forgotPasswordButton = document.getElementById("forgotPassword")
+      const closeModalButton = document.getElementById("closeModal")
+
+      forgotPasswordButton.addEventListener("click", function () {
+        modal.classList.remove("hidden")
+      })
+
+      closeModalButton.addEventListener("click", function () {
+        modal.classList.add("hidden")
+      })
+
+      window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+          modal.classList.add("hidden")
+        }
+      })
+    </script>
+  </body>
+</html>
